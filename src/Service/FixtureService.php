@@ -240,6 +240,17 @@ class FixtureService
             // Apply the map that has been specified
             if ($fieldClassNameMap !== null && array_key_exists($relationFieldName, $fieldClassNameMap)) {
                 $relationClassName = $dataObject->relField($fieldClassNameMap[$relationFieldName]);
+                
+                // Ensure we have a valid class name string before proceeding
+                if (!is_string($relationClassName) || empty($relationClassName)) {
+                    $this->addWarning(sprintf(
+                        'field_classname_map for field "%s" in class "%s" returned invalid class name: %s',
+                        $relationFieldName,
+                        $dataObject->ClassName,
+                        is_array($relationClassName) ? 'array' : gettype($relationClassName)
+                    ));
+                    continue;
+                }
             }
 
             // Check to see if class has requested that it not be included in relationship maps
